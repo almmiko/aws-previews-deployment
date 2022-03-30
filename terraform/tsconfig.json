@@ -4,6 +4,7 @@
     "charset": "utf8",
     "declaration": true,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
     "inlineSourceMap": true,
     "inlineSources": true,
     "lib": [

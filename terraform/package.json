@@ -24,10 +24,14 @@
   "dependencies": {
     "@cdktf/provider-aws": "^6.0.6",
     "cdktf": "^0.9.4",
-    "constructs": "^10.0.100"
+    "constructs": "^10.0.100",
+    "glob": "^7.2.0",
+    "mime-types": "^2.1.35"
   },
   "devDependencies": {
+    "@types/glob": "^7.2.0",
     "@types/jest": "^27.4.1",
+    "@types/mime-types": "^2.1.1",
     "@types/node": "^17.0.23",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
