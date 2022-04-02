@@ -9,6 +9,7 @@
     "build": "tsc",
     "synth": "cdktf synth",
     "plan": "cdktf diff",
+    "s3:upload": "node utils/s3-upload.js",
     "deploy": "cdktf deploy",
     "destroy": "cdktf destroy",
     "compile": "tsc --pretty",
@@ -22,11 +23,11 @@
     "node": ">=14.0"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.58.0",
     "@cdktf/provider-aws": "^6.0.6",
     "cdktf": "^0.9.4",
     "constructs": "^10.0.100",
-    "glob": "^7.2.0",
-    "mime-types": "^2.1.35"
+    "glob": "^7.2.0"
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",

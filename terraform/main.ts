@@ -1,12 +1,9 @@
 import { Construct } from "constructs";
-import glob from "glob";
 import path from "path";
-import mimeTypes from "mime-types";
-import crypto from "crypto";
 import { App, TerraformStack, TerraformAsset, AssetType } from "cdktf";
 import { AwsProvider, s3, cloudfront, acm, route53, lambdafunction, iam } from "@cdktf/provider-aws";
 
-// AWS Resources are configured in one file for the demo purposes.
+// AWS resources are configured in one file for the demo purposes.
 
 const configuration = {
     BUCKET_NAME: "aws-deployment-previews-root",
@@ -14,7 +11,6 @@ const configuration = {
     AWS_PROFILE: "terraform",
     DOMAIN_NAME: "al-sandbox.com",
     WILCARD_DOMAIN_NAME: "*.al-sandbox.com",
-    PREVIEW_PATH: "git-feature-branch", // s3 bucket subfolder name for a preview version.
 };
 
 class AWSDeploymentPreviewStack extends TerraformStack {
@@ -24,7 +20,7 @@ class AWSDeploymentPreviewStack extends TerraformStack {
     new AwsProvider(this, "AWS", {
         region: configuration.AWS_REGION,
         profile: configuration.AWS_PROFILE,
-      });
+    });
 
     /**
      * Root S3 Bucket Setup
@@ -44,21 +40,6 @@ class AWSDeploymentPreviewStack extends TerraformStack {
             suffix: "index.html"
         }
     });
-
-    const pattern = path.resolve(__dirname + "/../app/build");
-    const files = glob.sync(`${pattern}/**/*`, { absolute: false, nodir: true });
-
-    for (const file of files) {
-        new s3.S3Object(this, `aws_s3_object_${path.parse(file).name}`, {
-            bucket: bucket.bucket,
-            dependsOn: [bucket],
-            key: file.replace(`${pattern}/`, `${configuration.PREVIEW_PATH}/`),
-            source: file,
-            acl: "public-read",
-            etag: crypto.createHash("md5").update(file).digest("hex"),
-            contentType: mimeTypes.contentType(path.extname(file)) || "",
-        });
-    }
 
     /**
      * Lambda@Edge Resources Setup
