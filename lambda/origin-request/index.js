@@ -5,7 +5,7 @@ exports.handler = (event, context, callback) => {
 
     request.origin.custom.path = `/${branch}`;
 
-    request.headers['host'] = [{ key: 'host', value: request.origin.custom.domainName }];
+    request.headers.host = [{ key: 'host', value: request.origin.custom.domainName }];
 
     return callback(null, request);
 };
