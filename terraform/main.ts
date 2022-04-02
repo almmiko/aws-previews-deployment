@@ -8,27 +8,29 @@ import { AwsProvider, s3, cloudfront, acm, route53, lambdafunction, iam } from "
 
 // AWS Resources are configured in one file for the demo purposes.
 
-const BUCKET_NAME = "aws-deployment-previews-root";
-const AWS_REGION = "us-east-1";
-
-const DOMAIN_NAME = "al-sandbox.com";
-const WILCARD_DOMAIN_NAME = `*.${DOMAIN_NAME}`;
-const GIT_BRANCH = "b3442af" //Hardcoded for tests
+const configuration = {
+    BUCKET_NAME: "aws-deployment-previews-root",
+    AWS_REGION: "us-east-1",
+    AWS_PROFILE: "terraform",
+    DOMAIN_NAME: "al-sandbox.com",
+    WILCARD_DOMAIN_NAME: "*.al-sandbox.com",
+    PREVIEW_PATH: "git-feature-branch", // s3 bucket subfolder name for a preview version.
+};
 
 class AWSDeploymentPreviewStack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
     new AwsProvider(this, "AWS", {
-        region: AWS_REGION,
-        profile: "terraform",
+        region: configuration.AWS_REGION,
+        profile: configuration.AWS_PROFILE,
       });
 
     /**
      * Root S3 Bucket Setup
      */
     const bucket = new s3.S3Bucket(this, "aws_s3_bucket", {
-        bucket: BUCKET_NAME,
+        bucket: configuration.BUCKET_NAME,
     });
 
     new s3.S3BucketAcl(this, "aws_s3_acl", {
@@ -50,7 +52,7 @@ class AWSDeploymentPreviewStack extends TerraformStack {
         new s3.S3Object(this, `aws_s3_object_${path.parse(file).name}`, {
             bucket: bucket.bucket,
             dependsOn: [bucket],
-            key: file.replace(`${pattern}/`, `${GIT_BRANCH}/`),
+            key: file.replace(`${pattern}/`, `${configuration.PREVIEW_PATH}/`),
             source: file,
             acl: "public-read",
             etag: crypto.createHash("md5").update(file).digest("hex"),
@@ -112,13 +114,13 @@ class AWSDeploymentPreviewStack extends TerraformStack {
      * Route53 Resources Setup
      */
     const acmCert = new acm.AcmCertificate(this, "aws_acm_certificate", {
-        domainName: DOMAIN_NAME,
-        subjectAlternativeNames: [WILCARD_DOMAIN_NAME],
+        domainName: configuration.DOMAIN_NAME,
+        subjectAlternativeNames: [configuration.WILCARD_DOMAIN_NAME],
         validationMethod: "DNS"
     });
 
     const zone = new route53.DataAwsRoute53Zone(this, "aws_route53_zone", {
-        name: `${DOMAIN_NAME}.`,
+        name: `${configuration.DOMAIN_NAME}.`,
     });
 
     const route53Record = new route53.Route53Record(this, "aws_route53_record", {
@@ -162,7 +164,7 @@ class AWSDeploymentPreviewStack extends TerraformStack {
         enabled: true,
         dependsOn: [bucket],
         isIpv6Enabled: true,
-        aliases: [WILCARD_DOMAIN_NAME],
+        aliases: [configuration.WILCARD_DOMAIN_NAME],
         defaultRootObject: "index.html",
         origin: [
             {
@@ -207,7 +209,7 @@ class AWSDeploymentPreviewStack extends TerraformStack {
      */
     new route53.Route53Record(this, "aws_route53_record_wildcard", {
         zoneId: zone.zoneId,
-        name: WILCARD_DOMAIN_NAME,
+        name: configuration.WILCARD_DOMAIN_NAME,
         type: "A",
         alias: [{
             name: cloudfrontDistribution.domainName,
