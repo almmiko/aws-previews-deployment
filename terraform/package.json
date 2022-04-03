@@ -27,7 +27,8 @@
     "@cdktf/provider-aws": "^6.0.6",
     "cdktf": "^0.9.4",
     "constructs": "^10.0.100",
-    "glob": "^7.2.0"
+    "glob": "^7.2.0",
+    "mime-types": "^2.1.35"
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",

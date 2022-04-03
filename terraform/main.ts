@@ -5,12 +5,25 @@ import { AwsProvider, s3, cloudfront, acm, route53, lambdafunction, iam } from "
 
 // AWS resources are configured in one file for the demo purposes.
 
+/**
+ * Example configuration
+ *
+    const configuration = {
+        BUCKET_NAME: "aws-deployment-previews-root",
+        AWS_REGION: "us-east-1",
+        AWS_PROFILE: "terraform",
+        DOMAIN_NAME: "al-sandbox.com",
+        WILCARD_DOMAIN_NAME: "*.al-sandbox.com",
+    };
+*/
+
+// Add your configuration values
 const configuration = {
-    BUCKET_NAME: "aws-deployment-previews-root",
-    AWS_REGION: "us-east-1",
-    AWS_PROFILE: "terraform",
-    DOMAIN_NAME: "al-sandbox.com",
-    WILCARD_DOMAIN_NAME: "*.al-sandbox.com",
+    BUCKET_NAME: "",
+    AWS_REGION: "",
+    AWS_PROFILE: "",
+    DOMAIN_NAME: "",
+    WILCARD_DOMAIN_NAME: "",
 };
 
 class AWSDeploymentPreviewStack extends TerraformStack {
