@@ -6,7 +6,7 @@ You will deploy [Create React App](https://github.com/facebook/create-react-app)
 
 The AWS infrastructure is managed using [Terraform Cloud Development Kit](https://www.terraform.io/cdktf).
 
-## Installation
+## Getting Started
 
 Install [terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli).
 
